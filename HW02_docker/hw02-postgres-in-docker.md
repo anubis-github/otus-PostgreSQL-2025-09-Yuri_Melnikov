@@ -1,4 +1,5 @@
 # Работа с Postgres в Docker
+
 1. Создать ВМ с Ubuntu 20.04/22.04
 
 > VM cоздана в UI консоли Я.облако с параметрами 2CPU, 2Gb RAM, 20Gb HDD
