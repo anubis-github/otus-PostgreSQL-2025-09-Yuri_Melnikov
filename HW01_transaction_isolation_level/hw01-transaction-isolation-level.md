@@ -23,10 +23,10 @@
 
 > ``#`` Буду использовать Postgres в Docker, настроенный в рамках HM02\
 > postgres@postgres-vm-2-2-20-hdd:~$ sudo docker start pg-docker\
-> pg-docker\
+> pg-docker
 > 
 > postgres@postgres-vm-2-2-20-hdd:~$ sudo docker ps\
-CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS         PORTS                                         NAMES
+CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS         PORTS                                         NAMES\
 7a91fe960829   postgres:17   "docker-entrypoint.s…"   58 minutes ago   Up 2 minutes   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   pg-docker
 
 6. Зайти вторым ssh (вторая сессия).
@@ -34,7 +34,7 @@ CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS   
 > ssh -i ~/.ssh/ssh-key-postgres postgres@84.201.155.126\
 >   Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.8.0-85-generic x86_64)\
 >   ...\
-> Last login: Sun Oct 12 19:10:02 2025 from 93.100.77.210\
+> Last login: Sun Oct 12 19:10:02 2025 from 93.100.77.210
 
 7. Запустить везде psql из под пользователя postgres. Буду использовать для этих целей еще 2 контейнера с именами pg-client-1 и pg-client-2 в новых сессиях
 
@@ -42,7 +42,7 @@ CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS   
 > postgres@postgres-vm-2-2-20-hdd:~$ sudo docker run -it --rm --network pg-net --name pg-client-1 postgres:17 psql -h pg-docker -U postgres\
 > Password for user postgres:\
 > psql (17.6 (Debian 17.6-2.pgdg13+1))\
->Type "help" for help.\
+>Type "help" for help.
 >
 >postgres=#
 
@@ -50,7 +50,7 @@ CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS   
 > postgres@postgres-vm-2-2-20-hdd:~$ sudo docker run -it --rm --network pg-net --name pg-client-2 postgres:17 psql -h pg-docker -U postgres\
 > Password for user postgres:\
 > psql (17.6 (Debian 17.6-2.pgdg13+1))\
->Type "help" for help.\
+>Type "help" for help.
 >
 >postgres=#
 
@@ -89,7 +89,7 @@ INSERT 0 1
 14. Сделать `select * from persons` во второй сессии. Видите ли вы новую запись и если да то почему?
 
 > ``#`` Новая запись не видна во второй сессии так как в первой мы не завершили транзакцию, 
-> а при уровне изоляции read committed в текущей транзакции будут видны записи только успешно завершенных других транзакций\
+> а при уровне изоляции read committed в текущей транзакции будут видны записи только успешно завершенных других транзакций
 
 > postgres2=# select * from persons;\
 > id | first_name | second_name\
@@ -101,13 +101,13 @@ INSERT 0 1
 15. Завершить первую транзакцию: `commit;`
 
 > postgres1=*# commit;\
-> COMMIT\
+> COMMIT
 
 16. Cделать `select * from persons;` во второй сессии. Видите ли вы новую запись и если да то почему?
 
 > ``#`` Новая запись видна во второй сессии так как в первой мы завершили транзакцию.
 > И, хотя во второй сессии транзакция не завершена, при уровне изоляции read committed 
-> в текущей транзакции будут видны записи других успешно завершенных других транзакций\
+> в текущей транзакции будут видны записи других успешно завершенных других транзакций
 
 > postgres2=# select * from persons;\
 > id | first_name | second_name\
