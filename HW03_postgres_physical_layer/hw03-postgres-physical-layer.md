@@ -3,7 +3,7 @@
 1. создайте виртуальную машину c Ubuntu 20.04/22.04 LTS в ЯО/Virtual Box/докере
 > VM cоздана в UI консоли Я.облако с параметрами 2CPU, 2Gb RAM, 20Gb HDD
 
-2. Поставьте на нее PostgreSQL 15 через sudo apt
+2. Поставьте на нее PostgreSQL 18 через sudo apt
 
 ```shell
 # Использовались команды из официальной документации postgres https://www.postgresql.org/download/linux/ubuntu/ 
