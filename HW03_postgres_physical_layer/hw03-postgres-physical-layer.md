@@ -281,3 +281,145 @@ Type "help" for help.
 >(1 row)
 
 18. Задание со звездочкой *: не удаляя существующий инстанс ВМ сделайте новый, поставьте на его PostgreSQL, удалите файлы с данными из /var/lib/postgres, перемонтируйте внешний диск который сделали ранее от первой виртуальной машины ко второй и запустите PostgreSQL на второй машине так чтобы он работал с данными на внешнем диске, расскажите как вы это сделали и что в итоге получилось.
+> - Создаем VM в UI консоли Я.облако с параметрами 2CPU, 2Gb RAM, 20Gb HDD и именем postgres-2-vm-2-2-20-hdd по аналогии с п.1
+> - Ставим на нее PostgreSQL 18 через sudo apt  по аналогии с п.2 
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo apt install -y postgresql-common
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+...
+Running kernel seems to be up-to-date.
+No services need to be restarted.
+No containers need to be restarted.
+No user sessions are running outdated binaries.
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+```
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+This script will enable the PostgreSQL APT repository on apt.postgresql.org on
+your system. The distribution codename used will be noble-pgdg.
+
+Press Enter to continue, or Ctrl-C to abort.
+
+Using keyring /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg
+Writing /etc/apt/sources.list.d/pgdg.sources ...
+
+Running apt-get update ...
+Hit:1 http://mirror.yandex.ru/ubuntu noble InRelease
+Hit:2 http://mirror.yandex.ru/ubuntu noble-updates InRelease
+Hit:3 http://mirror.yandex.ru/ubuntu noble-backports InRelease
+Hit:4 http://security.ubuntu.com/ubuntu noble-security InRelease
+Hit:5 https://download.docker.com/linux/ubuntu noble InRelease
+Get:6 https://apt.postgresql.org/pub/repos/apt noble-pgdg InRelease [107 kB]
+Get:7 https://apt.postgresql.org/pub/repos/apt noble-pgdg/main amd64 Packages [350 kB]
+Fetched 457 kB in 1s (657 kB/s)
+Reading package lists... Done
+
+You can now start installing packages from apt.postgresql.org.
+
+Have a look at https://wiki.postgresql.org/wiki/Apt for more information;
+most notably the FAQ at https://wiki.postgresql.org/wiki/Apt/FAQ
+```
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo apt install postgresql-18
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+...
+Running kernel seems to be up-to-date.
+No services need to be restarted.
+No containers need to be restarted.
+No user sessions are running outdated binaries.
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+```
+> - Проверяем что кластер поднялся sudo -u postgres pg_lsclusters
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo -u postgres pg_lsclusters
+Ver Cluster Port Status Owner    Data directory              Log file
+18  main    5432 online postgres /var/lib/postgresql/18/main /var/log/postgresql/postgresql-18-main.log
+```
+> - Подключаем созданый в п. 7 диск disk-hdd-10gb к ВМ postgres-2-vm-2-2-20-hdd\
+> Для начала диск disk-hdd-10gb нужно отключить от ВМ postgres-vm-2-2-20-hdd\
+> Отключаем его от postgres-vm-2-2-20-hdd и подключаем к postgres-2-vm-2-2-20-hdd\
+> Диск disk-hdd-10gb подключен в UI консоли Я.Облако к ВМ postgres-2-vm-2-2-20-hdd
+
+> - Смотрим имя подключенного диска
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ lsblk
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+vda     253:0    0   20G  0 disk
+├─vda1  253:1    0 19.4G  0 part /
+├─vda14 253:14   0    4M  0 part
+└─vda15 253:15   0  600M  0 part /boot/efi
+vdb     253:16   0   10G  0 disk
+└─vdb1  253:17   0   10G  0 part
+```
+> - Подключаем его к файловой системе ВМ по аналогии с работами в п. 8 и 10 за исключением того,\
+> что мы не инициализируем файловую систему на диске заново так как нам нужны данные с него
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo mkdir -p /mnt/data
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo mount -o defaults /dev/vdb1 /mnt/data
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo vim /etc/fstab
+LABEL=cloudimg-rootfs   /        ext4   discard,commit=30,errors=remount-ro     0 1
+LABEL=UEFI /boot/efi vfat umask=0077 0 1
+LABEL=datapartition /mnt/data ext4 defaults 0 2
+postgres@postgres-2-vm-2-2-20-hdd:~$ df -h -x tmpfs
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1        19G  2.4G   17G  13% /
+/dev/vda15      599M  6.2M  593M   2% /boot/efi
+/dev/vdb1       9.8G   63M  9.2G   1% /mnt/data
+postgres@postgres-2-vm-2-2-20-hdd:~$ echo "success" | sudo tee /mnt/data/test_file
+success
+postgres@postgres-2-vm-2-2-20-hdd:~$ cat /mnt/data/test_file
+success
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo chown -R postgres:postgres /mnt/data/
+```
+> - Останавливаем кластер Postgres 
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo -u postgres pg_ctlcluster 18 main stop
+```
+> - Прописываем путь к данным кластера на подмонтированном диске в конфигурации Postgres по аналогии с п.13
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo cp /etc/postgresql/18/main/postgresql.conf /etc/postgresql/18/main/postgresql.conf.bak
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo grep -r "/var/lib/postgresql" /etc/postgresql/18/main/
+/etc/postgresql/18/main/postgresql.conf:data_directory = '/var/lib/postgresql/18/main'		# use data in another directory
+/etc/postgresql/18/main/postgresql.conf.bak:data_directory = '/var/lib/postgresql/18/main'		# use data in another directory
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo sed -i 's/var\/lib\/postgresql/mnt\/data/g' /etc/postgresql/18/main/postgresql.conf
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo grep -r "/mnt/data" /etc/postgresql/18/main/
+/etc/postgresql/18/main/postgresql.conf:data_directory = '/mnt/data/18/main'		# use data in another directory
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo rm -rf /etc/postgresql/18/main/postgresql.conf.bak
+```
+
+> - Запускаем кластер Postgres
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo -u postgres pg_ctlcluster 18 main start
+Warning: the cluster will not be running as a systemd service. Consider using systemctl:
+  sudo systemctl start postgresql@18-main
+```
+
+> - Проверяем статус кластера Postgres
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ sudo -u postgres pg_lsclusters
+Ver Cluster Port Status Owner    Data directory    Log file
+18  main    5432 online postgres /mnt/data/18/main /var/log/postgresql/postgresql-18-main.log
+```
+
+> - Подключаемся к БД
+```shell
+postgres@postgres-2-vm-2-2-20-hdd:~$ psql
+psql (18.0 (Ubuntu 18.0-1.pgdg24.04+3))
+Type "help" for help.
+
+postgres=#
+```
+
+> - Проверяем что наши данные присутствуют в таблице 
+```
+postgres=# select * from test;
+ c1
+----
+ 1
+(1 row)
+```
+
