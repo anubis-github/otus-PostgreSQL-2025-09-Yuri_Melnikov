@@ -95,8 +95,9 @@ synchronous_commit | on      | Write-Ahead Log / Settings | user    | configurat
 work_mem           | 4096    | Resource Usage / Memory    | user    | session
 (3 строки)
 ```
-> Инициализируем pgbench для БД postgres и пользователя postgres
+
 ```shell
+# Инициализируем pgbench для БД postgres и пользователя postgres
 yc-user@postgres-4-4-20-hdd-1:~$ pgbench -d postgres -h localhost -U postgres -i
 Password:
 dropping old tables...
@@ -111,8 +112,8 @@ creating primary keys...
 done in 0.29 s (drop tables 0.00 s, create tables 0.01 s, client-side generate 0.17 s, vacuum 0.06 s, primary keys 0.05 s).
 ```
 
-> Запускаем pgbench чтобы понять базовую производительность БД без дополнительных настроек
 ```shell
+# Запускаем pgbench чтобы понять базовую производительность БД без дополнительных настроек
 yc-user@postgres-4-4-20-hdd-1:~$ pgbench -i -d postgres -h localhost -U postgres -c 50 -j 2 -P 10 -T 60
 Password:
 pgbench (18.0 (Ubuntu 18.0-1.pgdg24.04+3))
