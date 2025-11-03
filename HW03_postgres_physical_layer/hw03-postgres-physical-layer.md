@@ -231,7 +231,7 @@ postgres@postgres-vm-2-2-20-hdd:~$  sudo grep -r "/var/lib/postgresql" /etc/post
 /etc/postgresql/18/main/postgresql.conf.bak:data_directory = '/var/lib/postgresql/18/main'		# use data in another directory
 
  #  Меняем старое значение параметра data_directory на /mnt/data/18/main
-postgres@postgres-vm-2-2-20-hdd:~$ sudo sed -i 's/var\/lib\/postgresql/mnt\/data/g' /etc/postgresql/18/main/postgresql.conf
+        postgres@postgres-vm-2-2-20-hdd:~$ sudo sed -i 's/var\/lib\/postgresql/mnt\/data/g' /etc/postgresql/18/main/postgresql.conf
 
 # Убеждаемся, что значение параметра обновилось правильно
 postgres@postgres-vm-2-2-20-hdd:~$ sudo grep -r "/mnt/data" /etc/postgresql/18/main/
