@@ -165,7 +165,8 @@ Type "help" for help.
 ```
 > testdb=# grant select on all tables in schema testnm to readonly;\
 > GRANT
-> А вот теперь получилось выдать привилегии
+
+> А вот теперь получилось выдать привилегии\
 > Подключаемся обратно пользователем testread и проверяем гипотезу
 
 ```shell
@@ -177,11 +178,11 @@ Type "help" for help.
 ```
 30. Сделайте ```select * from testnm.t1;```
 
-> testdb=> select * from testnm.t1;
-> c1
-> ----
-> 1
-> (1 row)
+> testdb=> select * from testnm.t1;\
+> c1\
+> ----\
+> 1\
+> (1 row)\
 
 31. Получилось? есть идеи почему? если нет - смотрите шпаргалку
 > Да, получилось, значит, гипотеза про выдачу привелегий только объекты, \
