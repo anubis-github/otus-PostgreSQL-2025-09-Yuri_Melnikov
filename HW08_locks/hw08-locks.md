@@ -162,8 +162,7 @@ UPDATE 1
 locks=#
 ```
 > Смотрим логи сервера и видим, что процесс 1619 (сессия 2) смог захватить разделяемую блокировку после ожидания 228 секунд\
-> по сообщениям\
-> ```process 1619 acquired ShareLock on transaction 768 after 228385.492 ms```
+> по сообщению ```process 1619 acquired ShareLock on transaction 768 after 228385.492 ms```
 ```shell
 postgres@otus-postgres-hw08-1:/home/yc-user$ tail -n 20 /var/log/postgresql/postgresql-18-main.log
 2025-11-14 19:33:39.313 UTC [961] LOG:  checkpoint starting: time
@@ -346,7 +345,7 @@ locks=# SELECT pid, pg_blocking_pids(pid) AS wait_for, locktype, relation::REGCL
 
 4. Воспроизведите взаимоблокировку трех транзакций. Можно ли разобраться в ситуации постфактум, изучая журнал сообщений?
 
-> Так как запись блокировок в журнал сообщений длиннее 200мс было оставлено, то в логе можно видеть последовательность событий из предыдущего пункта
+> Так как запись блокировок в журнал сообщений длиннее 200мс было оставлена, то в логе можно видеть последовательность событий из предыдущего пункта.
 > Отвечая на вопрос - да, можно разобраться в ситуации постфактум, читая журнал сообщений
 ```shell
 postgres@otus-postgres-hw08-1:/home/yc-user$ tail -n 100 /var/log/postgresql/postgresql-18-main.log
