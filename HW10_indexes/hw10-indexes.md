@@ -74,7 +74,7 @@ books=# explain select id, name, author, publication_date, description from book
 
 3. Реализовать индекс для полнотекстового поиска
 
-> - добавим значений в таблицу
+> Добавим значений в таблицу
 ```
 books=# insert into books(name, author, publication_date, description) values
     ('Книга 1', 'Автор 1', to_date('01 Dec 2000', 'DD Mon YYYY'), 'Во поле береза стояла'),
@@ -95,7 +95,7 @@ books=# update books set tsv_description = to_tsvector(description);
 UPDATE 12
 ```
 
-> - для полнотекстового поиска создаем индекс типа GIN (обобщенный обратный индекс)
+> Для полнотекстового поиска создаем индекс типа GIN (обобщенный обратный индекс)
 ```
 books=# create index on books using gin(tsv_description);
 CREATE INDEX
