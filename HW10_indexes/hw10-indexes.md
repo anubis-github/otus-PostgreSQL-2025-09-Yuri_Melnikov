@@ -147,16 +147,18 @@ INSERT 0 192
 > Проверяем теперь план запроса и видим ожидаемое поведение
 ```
 books=# explain select id, name, author, publication_date, description from books where tsv_description @@ to_tsquery('стояла & кудрявая');
-                              QUERY PLAN
-----------------------------------------------------------------------
- Seq Scan on books  (cost=0.00..4.15 rows=1 width=448)
-   Filter: (tsv_description @@ to_tsquery('стояла & кудрявая'::text))
-(2 rows)
+                                         QUERY PLAN
+--------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on books  (cost=36.67..1898.75 rows=1333 width=157)
+   Recheck Cond: (tsv_description @@ to_tsquery('стояла & кудрявая'::text))
+   ->  Bitmap Index Scan on books_tsv_description_idx  (cost=0.00..36.33 rows=1333 width=0)
+         Index Cond: (tsv_description @@ to_tsquery('стояла & кудрявая'::text))
+(4 rows)
 ```
 
 4. Реализовать индекс на часть таблицы или индекс на поле с функцией
 
-§> Сделаем индекс на часть таблицы
+> Сделаем индекс на часть таблицы
 ```
 books=# x where author in ('Автор 2', 'Автор 4', 'Автор 6', 'Автор 8', 'Автор 10', 'Автор 12');
 CREATE INDEX
