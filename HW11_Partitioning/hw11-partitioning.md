@@ -2,7 +2,7 @@
 
 ```shell
 # создаем ВМ через cli Я.Облако
-yc compute instance create \                                                             ✔ ╱ took 33s  ╱ at 16:05:03  ▓▒░
+yc compute instance create \
   --name otus-postgres-hw11-1 \
   --hostname otus-postgres-hw11-1 \
   --cores 2 \
