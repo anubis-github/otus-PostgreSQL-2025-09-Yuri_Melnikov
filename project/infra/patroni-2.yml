@@ -1,9 +1,9 @@
-scope: patroni-project
+scope: patroni
 namespace: /db/
-name: patroni-node-2
+name: patroni02
 restapi:
-  listen: 10.129.0.19:8008
-  connect_address: 10.129.0.19:8008
+  listen: 10.129.0.7:8008
+  connect_address: 10.129.0.7:8008
 etcd:
   protocol: http
   hosts: otus-prj-1:2379, otus-prj-2:2379, otus-prj-3:2379
@@ -13,12 +13,16 @@ bootstrap:
     loop_wait: 10
     retry_timeout: 10
     maximum_lag_on_failover: 1048576
+  postgresql:
+    use_pg_rewind: true
+    parameters:
+      autovacuum_analyze_scale_factor: 0.01
   initdb:
     - encoding: UTF8
   pg_hba:
-    - host replication replicator 127.0.0.1/8 md5 # localhost
-    - host replication replicator 10.129.0.38/32 scram-sha-256 # initial PG master node
-    - host replication replicator 10.129.0.19/32 scram-sha-256 # initial PG replica-1 node
+    - host replication replicator 127.0.0.1/8 scram-sha-256 # localhost
+    - host replication replicator 10.129.0.32/32 scram-sha-256 # initial PG master node
+    - host replication replicator 10.129.0.7/32 scram-sha-256 # initial PG replica-1 node
     - host all all 0.0.0.0/0 scram-sha-256
   users:
     admin:
@@ -28,14 +32,10 @@ bootstrap:
         - createdb
 
 postgresql:
-  use_pg_rewind: true
-  parameters:
-    autovacuum_analyze_scale_factor: 0.01
-  #      unix_socket_directories: '.'
   listen:
-    127.0.0.1,10.129.0.19:5432 # localhost & this PG node IPs
+    127.0.0.1,10.129.0.7:5432 # localhost & this PG node IPs
   connect_address:
-    10.129.0.19:5432 # this PG node IP
+    10.129.0.7:5432 # this PG node IP
   data_dir:
     /var/lib/postgresql/18/main
   bin_dir:
@@ -49,10 +49,11 @@ postgresql:
     superuser:
       username: postgres
       password: postgres
-#    rewind:
-#      username: rewind_user
-#      password: rewind_user
-
+    rewind:
+      username: postgres
+      password: postgres
+  parameters:
+    unix_socket_directories: '.'
 tags:
   nofailover: false
   noloadbalance: false

@@ -60,11 +60,12 @@ sudo systemctl stop postgresql
 #sudo rm -rf /var/lib/postgresql/18/main/*
 sudo -su postgres
 rm -rf /var/lib/postgresql/18/main/*
+ls -l /var/lib/postgresql/18/main/
 ```
 
 > Диагностика
 ```shell
-sudo journalctl -xeu postgresql@16-main.service
+sudo journalctl -xeu postgresql@18-main.service
 ```
 
 > Реинициализация кластера

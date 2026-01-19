@@ -16,7 +16,7 @@ yc compute instance create \
 vm_ip_address=$(yc compute instance show --name otus-prj-1 | grep -E ' +address' | tail -n 1 | awk '{print $2}') && \
 ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh-key-postgres yc-user@$vm_ip_address
 ```
-
+> Создание снапшот с etcd хост 1
 ```shell
 yc compute snapshot create \
   --name otus-prj-1-etcd \
@@ -24,6 +24,7 @@ yc compute snapshot create \
   --disk-name otus-prj-1
 ```
 
+> Создание снапшот с etcd+pg хост 1
 ```shell
 yc compute snapshot create \
   --name otus-prj-1-etcd-pg \
@@ -38,6 +39,7 @@ yc compute snapshot create \
   --disk-name otus-prj-1
 ```
 
+> Создание хост 1 из снапшота
 ```shell
 yc compute instance create \
 --name otus-prj-1 \
@@ -45,11 +47,10 @@ yc compute instance create \
 --cores 4 \
 --core-fraction 100 \
 --memory 8 \
---create-boot-disk name=otus-prj-1,snapshot-name=otus-prj-1-patroni \
+--create-boot-disk name=otus-prj-1,snapshot-name=otus-prj-1-etcd-pg \
 --network-interface subnet-name=default-ru-central1-b,nat-ip-version=ipv4 \
 --ssh-key ~/.ssh/ssh-key-postgres.pub
 ```
-
 
 > Создаем хост 2
 ```shell
@@ -68,20 +69,23 @@ yc compute instance create \
 vm_ip_address=$(yc compute instance show --name otus-prj-2 | grep -E ' +address' | tail -n 1 | awk '{print $2}') && \
 ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh-key-postgres yc-user@$vm_ip_address
 ```
-
+> Создание снапшот с etcd хост 2
 ```shell
-yc compute snapshot create \                                                                  ✔ ╱ took 5s  ╱ at 23:43:23  ▓▒░
+yc compute snapshot create \
   --name otus-prj-2-etcd \
   --description "otus-prj-2-etcd" \
   --disk-name otus-prj-2
 ```
 
+> Создание снапшот с etcd+pg хост 2
 ```shell
 yc compute snapshot create \
   --name otus-prj-2-etcd-pg \
   --description "otus-prj-2-etcd-pg" \
   --disk-name otus-prj-2
 ```
+
+> Создание хост 2 из снапшота
 ```shell
 yc compute instance create \
 --name otus-prj-2 \
@@ -113,16 +117,31 @@ vm_ip_address=$(yc compute instance show --name otus-prj-3 | grep -E ' +address'
 ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh-key-postgres yc-user@$vm_ip_address
 ```
 
+> Создание снапшот с etcd хост 3
 ```shell
-yc compute snapshot create \                                                                  ✔ ╱ took 5s  ╱ at 23:43:23  ▓▒░
+yc compute snapshot create \
   --name otus-prj-3-etcd \
   --description "otus-prj-3-etcd" \
   --disk-name otus-prj-3
 ```
 
+> Создание снапшот с etcd+pg хост 3
 ```shell
 yc compute snapshot create \
   --name otus-prj-3-etcd-pg \
   --description "otus-prj-3-etcd-pg" \
   --disk-name otus-prj-3
+```
+
+> Создание хост 3 из снапшота
+```shell
+yc compute instance create \
+--name otus-prj-3 \
+--hostname otus-prj-3 \
+--cores 4 \
+--core-fraction 100 \
+--memory 8 \
+--create-boot-disk name=otus-prj-3,snapshot-name=otus-prj-3-etcd-pg \
+--network-interface subnet-name=default-ru-central1-b,nat-ip-version=ipv4 \
+--ssh-key ~/.ssh/ssh-key-postgres.pub
 ```
