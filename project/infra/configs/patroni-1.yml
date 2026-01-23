@@ -1,9 +1,9 @@
 scope: patroni
 namespace: /db/
-name: patroni02
+name: patroni01
 restapi:
-  listen: 10.129.0.7:8008
-  connect_address: 10.129.0.7:8008
+  listen: 10.129.0.4:8008
+  connect_address: 10.129.0.4:8008
 etcd:
   protocol: http
   hosts: otus-prj-1:2379, otus-prj-2:2379, otus-prj-3:2379
@@ -17,13 +17,13 @@ bootstrap:
     use_pg_rewind: true
     parameters:
       autovacuum_analyze_scale_factor: 0.01
+    pg_hba:
+      - host replication replicator 127.0.0.1/8 scram-sha-256 # localhost
+      - host replication replicator 10.129.0.4/32 scram-sha-256 # initial PG master node
+      - host replication replicator 10.129.0.24/32 scram-sha-256 # initial PG replica-1 node
+      - host all all 0.0.0.0/0 scram-sha-256
   initdb:
     - encoding: UTF8
-  pg_hba:
-    - host replication replicator 127.0.0.1/8 scram-sha-256 # localhost
-    - host replication replicator 10.129.0.32/32 scram-sha-256 # initial PG master node
-    - host replication replicator 10.129.0.7/32 scram-sha-256 # initial PG replica-1 node
-    - host all all 0.0.0.0/0 scram-sha-256
   users:
     admin:
       password: admin # user admin password for Patroni cluster
@@ -33,15 +33,17 @@ bootstrap:
 
 postgresql:
   listen:
-    127.0.0.1,10.129.0.7:5432 # localhost & this PG node IPs
+    127.0.0.1,10.129.0.4:5432 # localhost & this PG node IPs
   connect_address:
-    10.129.0.7:5432 # this PG node IP
+    10.129.0.4:5432 # this PG node IP
   data_dir:
     /var/lib/postgresql/18/main
   bin_dir:
     /usr/lib/postgresql/18/bin
   config_dir:
     /etc/postgresql/18/main
+  pgpass:
+    /tmp/pgpass1
   authentication:
     replication:
       username: replicator
@@ -52,8 +54,8 @@ postgresql:
     rewind:
       username: postgres
       password: postgres
-  parameters:
-    unix_socket_directories: '.'
+#  parameters:
+#    unix_socket_directories: '.'
 tags:
   nofailover: false
   noloadbalance: false
