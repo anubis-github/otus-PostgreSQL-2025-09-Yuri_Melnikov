@@ -66,6 +66,7 @@ ls -l /var/lib/postgresql/18/main/
 > Диагностика
 ```shell
 sudo journalctl -xeu postgresql@18-main.service
+sudo tail -n 20 /var/log/postgresql/postgresql-18-main.log
 ```
 
 > Реинициализация кластера
