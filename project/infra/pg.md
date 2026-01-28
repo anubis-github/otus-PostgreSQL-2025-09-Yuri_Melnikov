@@ -54,36 +54,17 @@ listen_addresses = '*'                  # what IP address(es) to listen on;
 sudo systemctl restart postgresql
 ```
 
-6. На второй и третьей ноде удалить содержимое каталога pgdata: 
+6. На второй ноде остановить Postgres и удалить содержимое каталога /var/lib/postgresql/18/main/
 ```shell
 sudo systemctl stop postgresql 
-#sudo rm -rf /var/lib/postgresql/18/main/*
+# почему-то эта команда не очищала каталог sudo rm -rf /var/lib/postgresql/18/main/*
 sudo -su postgres
 rm -rf /var/lib/postgresql/18/main/*
 ls -l /var/lib/postgresql/18/main/
 ```
 
-> Диагностика
+> Диагностика, которой пользовался для исследования проблем
 ```shell
 sudo journalctl -xeu postgresql@18-main.service
 sudo tail -n 20 /var/log/postgresql/postgresql-18-main.log
 ```
-
-> Реинициализация кластера
-
-sudo systemctl stop postgresql
-
-sudo rm -rf /etc/postgresql/18/main/*
-sudo rm -rf /var/lib/postgresql/18/main
-sudo mkdir /var/lib/postgresql/18/main
-sudo chown -R postgres /var/lib/postgresql/18/main
-
--- reinstall 
-sudo apt -y reinstall postgresql
-
-
---sudo -u postgres /usr/lib/postgresql/16/bin/initdb -D /var/lib/postgresql/18/main
-
-sudo pg_createcluster 16 main
-
-sudo systemctl start postgresql

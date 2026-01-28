@@ -1,9 +1,4 @@
 1. Устанавливаем etcd
-> Аппаратные рекомендации https://etcd.io/docs/v3.6/op-guide/hardware/
-> Оригинальная инструкция https://etcd.io/docs/v3.6/install/
-> Инструкция с apt https://linuxconfig.org/how-to-install-etcd-on-ubuntu
-> Инструкция из презентации
-
 > На каждой ноде ставим etcd
 ```shell
 sudo apt -y install etcd-server
@@ -93,30 +88,8 @@ sudo systemctl status etcd.service
 etcdctl endpoint status --cluster -w table
 ```
 
-4. Создаем снапшот ВМ
-```shell
-# otus-prj-1 ВМ
-yc compute snapshot create \
-  --name otus-prj-1-etcd \
-  --description "otus-prj-1-etcd" \
-  --disk-name otus-prj-1
-
-# otus-prj-2 ВМ
-yc compute snapshot create \
-  --name otus-prj-2-etcd \
-  --description "otus-prj-2-etcd" \
-  --disk-name otus-prj-2
-
-# otus-prj-3 ВМ
-yc compute snapshot create \
-  --name otus-prj-3-etcd \
-  --description "otus-prj-3-etcd" \
-  --disk-name otus-prj-3
-```
-
-5. Если что-то пошло не так
-> Если запорота БД кластера
-> - убиваем БД и перезапускаем сервис
+4. Если что-то пошло не так
+> - Если сломана БД кластера - убиваем БД и перезапускаем сервис
 ```shell
 sudo systemctl stop etcd
 sudo rm -R /var/lib/etcd/member/

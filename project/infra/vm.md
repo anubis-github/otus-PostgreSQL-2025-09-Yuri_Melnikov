@@ -1,4 +1,4 @@
-> Создаем хотст 1 с нуля
+> Создаем хост 1 с нуля
 ```shell
 yc compute instance create \
 --name otus-prj-1 \

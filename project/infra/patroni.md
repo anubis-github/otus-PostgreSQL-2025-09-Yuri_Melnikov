@@ -31,7 +31,7 @@ sudo -u postgres /opt/patroni/venv/bin/pip install 'patroni[etcd3]'
 sudo -u postgres /opt/patroni/venv/bin/pip install 'psycopg2-binary'
 ```
 
-7. Конфигурация Patroni на каждой ноде - взять конфиг из файлов patroni-1.yml и patroni-2.yml
+7. Конфигурация Patroni на каждой ноде - взять конфиг из файлов configs/patroni-1.yml и configs/patroni-2.yml
 > - редактируем конфиг
 ```shell
 sudo nano /etc/patroni.yml
@@ -41,7 +41,7 @@ sudo nano /etc/patroni.yml
 sudo /opt/patroni/venv/bin/patroni --validate-config /etc/patroni.yml -i
 ```
 
-8. Конфигурируем сервис Patroni на каждой ноде - взять конфиг из файла patroni.service
+8. Конфигурируем сервис Patroni на каждой ноде - взять конфиг из файла configs/patroni.service
 ```shell
 sudo nano /etc/systemd/system/patroni.service
 ```
@@ -57,10 +57,8 @@ sudo systemctl start patroni
 sudo systemctl status patroni
 sudo /opt/patroni/venv/bin/patronictl -c /etc/patroni.yml list
 ```
-> - Диагностика
+> - Диагностика, которой пользовался для исследования проблем
 ```shell
 sudo journalctl -xeu patroni.service
 sudo journalctl -u patroni
-
-sudo /opt/patroni/venv/bin/patroni --validate-config /etc/patroni.yml -i
 ```
