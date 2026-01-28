@@ -13,7 +13,7 @@
 5. Устанавливаем HAProxy на ВМ otus-prj-3
 > Описано в infra/haproxy.md
 
-6. Демострация
+6. Демонстрация
 > Проверяем статус patroni на otus-prj-1
 ```shell
 yc-user@otus-prj-1:~$ sudo /opt/patroni/venv/bin/patronictl -c /etc/patroni.yml list
