@@ -3,9 +3,9 @@
 yc compute instance create \
 --name otus-prj-1 \
 --hostname otus-prj-1 \
---cores 4 \
---core-fraction 100 \
---memory 8 \
+--cores 2 \
+--core-fraction 50 \
+--memory 4 \
 --create-boot-disk name=otus-prj-1,size=20G,type=network-hdd,image-folder-id=standard-images,image-family=ubuntu-2404-lts \
 --network-interface subnet-name=default-ru-central1-b,nat-ip-version=ipv4 \
 --ssh-key ~/.ssh/ssh-key-postgres.pub
@@ -44,9 +44,9 @@ yc compute snapshot create \
 yc compute instance create \
 --name otus-prj-1 \
 --hostname otus-prj-1 \
---cores 4 \
---core-fraction 100 \
---memory 8 \
+--cores 2 \
+--core-fraction 50 \
+--memory 4 \
 --create-boot-disk name=otus-prj-1,snapshot-name=otus-prj-1-etcd-pg \
 --network-interface subnet-name=default-ru-central1-b,nat-ip-version=ipv4 \
 --ssh-key ~/.ssh/ssh-key-postgres.pub
@@ -57,9 +57,9 @@ yc compute instance create \
 yc compute instance create \
 --name otus-prj-2 \
 --hostname otus-prj-2 \
---cores 4 \
---core-fraction 100 \
---memory 8 \
+--cores 2 \
+--core-fraction 50 \
+--memory 4 \
 --create-boot-disk name=otus-prj-2,size=20G,type=network-hdd,image-folder-id=standard-images,image-family=ubuntu-2404-lts \
 --network-interface subnet-name=default-ru-central1-b,nat-ip-version=ipv4 \
 --ssh-key ~/.ssh/ssh-key-postgres.pub
@@ -90,9 +90,9 @@ yc compute snapshot create \
 yc compute instance create \
 --name otus-prj-2 \
 --hostname otus-prj-2 \
---cores 4 \
---core-fraction 100 \
---memory 8 \
+--cores 2 \
+--core-fraction 50 \
+--memory 4 \
 --create-boot-disk name=otus-prj-2,snapshot-name=otus-prj-2-etcd-pg \
 --network-interface subnet-name=default-ru-central1-b,nat-ip-version=ipv4 \
 --ssh-key ~/.ssh/ssh-key-postgres.pub
@@ -104,9 +104,9 @@ yc compute instance create \
 yc compute instance create \
 --name otus-prj-3 \
 --hostname otus-prj-3 \
---cores 4 \
---core-fraction 100 \
---memory 8 \
+--cores 2 \
+--core-fraction 50 \
+--memory 4 \
 --create-boot-disk name=otus-prj-3,size=20G,type=network-hdd,image-folder-id=standard-images,image-family=ubuntu-2404-lts \
 --network-interface subnet-name=default-ru-central1-b,nat-ip-version=ipv4 \
 --ssh-key ~/.ssh/ssh-key-postgres.pub
@@ -138,9 +138,9 @@ yc compute snapshot create \
 yc compute instance create \
 --name otus-prj-3 \
 --hostname otus-prj-3 \
---cores 4 \
---core-fraction 100 \
---memory 8 \
+--cores 2 \
+--core-fraction 50 \
+--memory 4 \
 --create-boot-disk name=otus-prj-3,snapshot-name=otus-prj-3-etcd-pg \
 --network-interface subnet-name=default-ru-central1-b,nat-ip-version=ipv4 \
 --ssh-key ~/.ssh/ssh-key-postgres.pub
