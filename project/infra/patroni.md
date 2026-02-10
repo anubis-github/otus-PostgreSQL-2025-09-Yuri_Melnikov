@@ -3,7 +3,7 @@
 
 1. Ставим модуль для создания виртуальных окружений
 ```shell
-sudo apt install python3.12-venv
+sudo apt update && sudo apt install python3.12-venv
 ```
  
 2. Создаём каталог для Patroni.
