@@ -41,11 +41,11 @@ CREATE TABLE
 
 3. Заполнить table1 100 строками с помощью generate_series.
 ```shell
--- Генерируем данные
+# Генерируем данные
 yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -d test_db -c "insert into my_schema.table1 select generate_series(1,100)::char(10);"
 INSERT 0 100
 
--- Проверяем что данные сформированы
+# Проверяем что данные сформированы
 yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -d test_db -c "select count(*) from my_schema.table1;"
  count
 -------
@@ -66,16 +66,16 @@ COPY 100
 
 6. Восстановление из COPY: Загрузить данные из CSV в table2.
 ```shell
--- Проверяем что до загрузки данных нет 
+# Проверяем что до загрузки данных нет 
 yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -d test_db -c "select count(*) from my_schema.table2;"
  count
 -------
      0
 (1 row)
--- Загружаем данные из файла
+# Загружаем данные из файла
 yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -d test_db -c "\copy my_schema.table2 from /var/lib/postgresql/backups/table1.csv delimiter ',' csv header"
 COPY 100
--- Проверяем что данные появились 
+# Проверяем что данные появились 
 yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -d test_db -c "select count(*) from my_schema.table2;"
  count
 -------
@@ -90,15 +90,15 @@ yc-user@otus-postgres-hw13-1:~$ sudo -u postgres pg_dump -Fc --schema my_schema 
 8. Восстановление через pg_restore: В новую БД restored_db восстановить только table2 из дампа
 Важно: Предварительно создать схему my_schema в restored_db.
 ```shell
--- Создаем БД
+# Создаем БД
 yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -c "create database restore_db;"
 CREATE DATABASE
--- Создаем схему
+# Создаем схему
 yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -d restore_db -c "create schema my_schema;"
 CREATE SCHEMA
--- Восстанавливаем только таблицу table2
+# Восстанавливаем только таблицу table2
 yc-user@otus-postgres-hw13-1:~$ sudo -u postgres pg_restore -d restore_db -t table2 /tmp/my_schema.dump
--- Проверяем что данные восстановились
+# Проверяем что данные восстановились
 yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -d restore_db -c "select count(*) from my_schema.table2;"
  count
 -------
