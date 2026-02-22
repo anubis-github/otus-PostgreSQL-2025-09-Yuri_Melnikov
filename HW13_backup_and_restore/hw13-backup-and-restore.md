@@ -46,7 +46,8 @@ yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -d test_db -c "insert into
 INSERT 0 100
 
 -- Проверяем что данные сформированы
-yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -d test_db -c "select count(*) from my_schema.table1;" count
+yc-user@otus-postgres-hw13-1:~$ sudo -u postgres psql -d test_db -c "select count(*) from my_schema.table1;"
+ count
 -------
    100
 (1 row)
